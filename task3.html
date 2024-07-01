@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    .tic-tac-toe {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+      font-size: 36px;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #0072ff;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="tic-tac-toe">
+    <h1>PRODIGY INFOTECH Tic-Tac-Toe</h1>
+    <div class="board">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+    </div>
+    <button id="resetBtn">Reset Game</button>
+    <p id="message"></p>
+  </div>
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    const resetBtn = document.getElementById('resetBtn');
+    const message = document.getElementById('message');
+    let currentPlayer = 'X';
+    let gameState = ['', '', '', '', '', '', '', '', ''];
+    let gameActive = true;
+
+    const winningConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+    resetBtn.addEventListener('click', resetGame);
+
+    function handleCellClick(event) {
+      const clickedCell = event.target;
+      const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+      if (gameState[clickedCellIndex] !== '' || !gameActive) {
+        return;
+      }
+
+      gameState[clickedCellIndex] = currentPlayer;
+      clickedCell.textContent = currentPlayer;
+
+      if (checkWin()) {
+        message.textContent = `Player ${currentPlayer} wins!`;
+        gameActive = false;
+        return;
+      }
+
+      if (isDraw()) {
+        message.textContent = 'Game is a draw!';
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      message.textContent = `It's ${currentPlayer}'s turn`;
+    }
+
+    function checkWin() {
+      return winningConditions.some(condition => {
+        return condition.every(index => gameState[index] === currentPlayer);
+      });
+    }
+
+    function isDraw() {
+      return gameState.every(cell => cell !== '');
+    }
+
+    function resetGame() {
+      currentPlayer = 'X';
+      gameState = ['', '', '', '', '', '', '', '', ''];
+      gameActive = true;
+      message.textContent = `It's ${currentPlayer}'s turn`;
+      cells.forEach(cell => (cell.textContent = ''));
+    }
+  </script>
+</body>
+</html>
